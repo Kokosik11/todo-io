@@ -1,0 +1,11 @@
+{
+    "Server": {
+        "PORT": 3010
+    },
+    "DB": {
+        "HOST": "localhost",
+        "USER": "root",
+        "DBName": "todoiodb",
+        "PASS": "Tanaka2002"
+    }
+}
