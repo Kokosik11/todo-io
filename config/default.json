@@ -6,6 +6,7 @@
         "HOST": "localhost",
         "USER": "root",
         "DBName": "todoiodb",
-        "PASS": "Tanaka2002"
+        "PASS": "Tanaka2002",
+        "DIALECT": "mysql"
     }
 }

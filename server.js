@@ -11,10 +11,14 @@ const { PORT } = config.get("Server");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-db.connection.connect(err => {
-    if(err) console.error(err);
-    else console.log("mySql connection has completed");
-})
+db.sequelize.sync({ force: true }).then(() => {
+    console.log("Drop and re-sync db.");
+});
+
+// db.connection.connect(err => {
+//     if(err) console.error(err);
+//     else console.log("mySql connection has completed");
+// })
 
 // const users = [
 //     [null, "Kokosik11", "Tanaka2002"],

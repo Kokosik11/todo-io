@@ -1,25 +1,47 @@
+const bcrypt = require("bcrypt");
 const db = require("../config/db");
+const User = db.users;
+const Op = db.Sequelize.Op;
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     const { nickname, password } = req.body;
-    // let user = {
-    //     id: null,
-    //     nickname: nickname,
-    //     password: password 
-    // }
 
-    let user = [nickname, password]
+    if(!nickname || !password) {
+        res.status(404).send({ message: "Please enter a nickname or password." });
+        return;
+    }
 
-    db.connection.execute(`INSERT INTO users(nickname, password) VALUES(?, ?)`, user, (er, result) => {
-        if(er) {
-            console.log(er);
-            res.send(er);
-        } else {
-            res.send("User has created")
-        }
+    const hashedPsw = await bcrypt.hash(password, 12);
+
+    const user = {
+        nickname,
+        password: hashedPsw
+    }
+
+    User.create(user)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message })
+        })
+}
+
+exports.delete = (req, res) => {
+    const { nickname } = req.params;
+
+    User.destroy({ 
+        where: { nickname }
     })
-
-    // console.log(user);
-
-    // res.send(user)   
+        .then(num => {
+            if(num == 1){
+                res.send({ message: "User was deleted successfully"});
+            }
+            else {
+                res.send({ message: `Cannot delete User "${nickname}". Maybe User was not found!`});
+            }
+        })
+        .catch(err => {
+            res.status(500).send({ message: `Could not delete User "${nickname}"`, err});
+        });
 }
